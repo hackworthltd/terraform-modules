@@ -5,10 +5,10 @@ resource "aws_security_group" "this" {
   revoke_rules_on_delete = true
 }
 
-resource "aws_security_group_rule" "this" {
+resource "aws_security_group_rule" "rds" {
   count                    = length(var.sg_ids)
 
-  security_group_id        = aws_security_group.this
+  security_group_id        = aws_security_group.this.id
   type                     = "ingress"
   from_port                = var.rds_port
   to_port                  = var.rds_port
@@ -19,8 +19,8 @@ resource "aws_security_group_rule" "this" {
 
 # Allow RDS port on self.
 
-resource "aws_security_group_rule" "this" {
-  security_group_id = aws_security_group.this
+resource "aws_security_group_rule" "rds_self" {
+  security_group_id = aws_security_group.this.id
   type              = "ingress"
   from_port         = var.rds_port
   to_port           = var.rds_port
@@ -32,7 +32,7 @@ resource "aws_security_group_rule" "this" {
 # All egress.
 
 resource "aws_security_group_rule" "egress" {
-  security_group_id = aws_security_group.this
+  security_group_id = aws_security_group.this.id
   type              = "egress"
   from_port         = 0
   to_port           = 0
